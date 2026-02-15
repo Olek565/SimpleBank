@@ -25,6 +25,8 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        ports:
+          - 5432:5432
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -46,9 +48,13 @@ jobs:
     # Safe check: confirms secrets are present without printing them
     - name: Validate required secrets exist
       shell: bash
+      env:
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       run: |
         for v in POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB; do
-          if [ -z "${{ secrets[format('{0}', v)] }}" ]; then
+          if [ -z "${!v}" ]; then
             echo "::error::$v secret is missing or empty"
             exit 1
           fi
