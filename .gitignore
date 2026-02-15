@@ -61,3 +61,6 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+Makefile
+*/Makefile
