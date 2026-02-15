@@ -59,9 +59,18 @@ jobs:
             exit 1
           fi
         done
+    
+    - name: Install migrate
+      run: |
+        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.1/migrate.linux-amd64.tar.gz | tar xz
+        sudo mv migrate /usr/local/bin/migrate
+        migrate -version
 
     - name: Run migrations
-      run: migrate -path db/migration -database "postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" -verbose up 
-
+      run: |
+        migrate -path db/migration \
+          -database "postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" \
+          -verbose up
+          
     - name: Test
       run: go test -v -cover ./...
