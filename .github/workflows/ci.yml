@@ -11,16 +11,14 @@ on:
 
 jobs:
   test:
-    name: Test
+    name: unitTests
     environment: postgres
     runs-on: ubuntu-latest
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
       postgres:
-        # Docker Hub image
         image: postgres
-        # Provide the password for postgres
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -33,7 +31,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
 
     steps:
     - name: Check out code into the Go module directory
@@ -71,6 +68,6 @@ jobs:
         migrate -path db/migration \
           -database "postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" \
           -verbose up
-          
-    - name: Test
+
+    - name: Run the tests
       run: go test -v -cover ./...
