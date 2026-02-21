@@ -57,10 +57,13 @@ go.work.sum
 
 # env file
 .env
+*.env
+*/*.env
+
 
 # Editor/IDE
 # .idea/
 # .vscode/
 
-Makefile
-*/Makefile
+# Makefile
+# */Makefile
